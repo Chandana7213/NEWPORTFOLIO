@@ -1,26 +1,33 @@
 version: 0.2
-
+ 
 phases:
-  install:
-    runtime-versions:
-      python: 3.8
-    commands:
-      - echo Installing required packages
-      - apt-get update
-      - apt-get install -y jq unzip openssh-client
-  pre_build:
-    commands:
-      - echo Fetching PEM key from Secrets Manager
-      - aws secretsmanager get-secret-value --secret-id ec2PemFile --query SecretString --output text | jq -r '.ec2_key' > ec2-key.pem
-      - chmod 400 ec2-key.pem
-  build:
-    commands:
-      - echo No build step required for static site
-  post_build:
-    commands:
-      - echo Deploying to EC2
-      - scp -i ec2-key.pem -o StrictHostKeyChecking=no -r * ubuntu@13.201.89.59:/var/www/html/
 
+  pre_build:
+
+    commands:
+
+      - echo Fetching PEM from Secrets Manager
+
+      - aws secretsmanager get-secret-value --secret-id ec2PemFile --query SecretString --output text | jq -r '.ec2_key' > ec2-key.pem
+
+      - chmod 400 ec2-key.pem
+ 
+  build:
+
+    commands:
+
+      - echo Building static website files
+ 
+  post_build:
+
+    commands:
+
+      - echo Deploying to EC2
+
+      - scp -i ec2-key.pem -o StrictHostKeyChecking=no -r * ubuntu@13.201.89.59:/var/www/html/
+ 
 artifacts:
+
   files:
+
     - '**/*'
