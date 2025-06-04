@@ -1,33 +1,12 @@
 version: 0.2
- 
+
 phases:
-
-  pre_build:
-
+  install:
     commands:
-
-      - echo Fetching PEM from Secrets Manager
-
-      - aws secretsmanager get-secret-value --secret-id ec2PemFile --query SecretString --output text | jq -r '.ec2_key' > ec2-key.pem
-
-      - chmod 400 ec2-key.pem
- 
+      - echo "Nothing to install for static site"
   build:
-
     commands:
-
-      - echo Building static website files
- 
-  post_build:
-
-    commands:
-
-      - echo Deploying to EC2
-
-      - scp -i ec2-key.pem -o StrictHostKeyChecking=no -r * ubuntu@13.201.89.59:/var/www/html/
- 
+      - echo "No build needed for static site"
 artifacts:
-
   files:
-
     - '**/*'
