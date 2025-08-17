@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: newportfolio-deployment
+  labels:
+    app: newportfolio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: newportfolio
+  template:
+    metadata:
+      labels:
+        app: newportfolio
+    spec:
+      containers:
+        - name: newportfolio
+          image: nginx:alpine
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: website
+              mountPath: /usr/share/nginx/html
+      volumes:
+        - name: website
+          configMap:
+            name: newportfolio-html
